@@ -403,5 +403,3 @@ That produces:
 
 - `dist/mb-aws-helper-1.0.0.tar.gz`
 - `dist/mb-aws-helper-1.0.0.sha256`
-
-The Homebrew tap formula should point to a public URL for the tarball and use the SHA256 from the generated file.
