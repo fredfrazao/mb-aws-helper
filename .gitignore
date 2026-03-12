@@ -1,1 +1,9 @@
 /dist
+/aws_helper/__pycache__
+/aws_helper/aws/__pycache__
+/aws_helper/cli/__pycache__
+/aws_helper/commands/__pycache__
+/aws_helper/interactive/__pycache__
+/aws_helper/output/__pycache__
+/aws_helper/ssm/__pycache__
+/aws_helper/utils/__pycache__

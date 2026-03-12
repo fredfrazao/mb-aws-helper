@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import sys
 
-from aws_helper.cli.parser import make_parser
+from aws_helper.cli.parser import make_parser, print_examples
 from aws_helper.commands.artifactory import cmd_support_instances, cmd_support_status
 from aws_helper.commands.common import cmd_asgs, cmd_env, cmd_instances, cmd_ssm, cmd_summary
 from aws_helper.commands.gitlab import (
@@ -25,6 +25,11 @@ def main() -> None:
         return
 
     args = parser.parse_args()
+
+    if getattr(args, "examples", False):
+        print_examples()
+        raise SystemExit(0)
+
     configure_logging(verbose=args.verbose, debug=args.debug)
 
     if not getattr(args, "command", None):
