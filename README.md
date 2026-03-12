@@ -45,21 +45,6 @@ It supports:
 - access to the required AWS accounts
 - `boto3` and `botocore`
 
-## Installation
-
-### Option A — Manual setup
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-### Option B — Bootstrap script
-
-```bash
-./init.sh
-```
 
 ## Project structure
 
@@ -96,21 +81,6 @@ pip install -r requirements.txt
         ├── common.py
         └── logging_utils.py
 ```
-
-## What changed in the refactor
-
-The original project concentrated the full application in a single large `aws_tool.py` file. The refactor separates responsibilities into focused modules:
-
-- `aws_helper/main.py` handles top-level flow control
-- `aws_helper/cli/parser.py` owns `argparse`
-- `aws_helper/interactive/menu.py` owns the interactive flow
-- `aws_helper/aws/*` owns AWS auth, discovery, and cache
-- `aws_helper/ssm/session.py` owns interactive SSM and screen commands
-- `aws_helper/commands/*` owns service-specific business logic
-- `aws_helper/output/renderers.py` owns table rendering
-- `aws_helper/utils/*` owns shared helpers and logging
-
-Functional behavior was kept aligned with the original script, while making the code much easier to read and extend.
 
 ## Profile resolution
 
@@ -346,20 +316,6 @@ Notes:
 - cache is process-local
 - default TTL is 30 seconds
 - a new process starts with an empty cache
-
-## Compatibility notes
-
-The project keeps `aws_tool.py` as a thin compatibility wrapper, so existing usage like this still works:
-
-```bash
-python aws_tool.py asgs sandbox
-```
-
-A new convenience wrapper is also included:
-
-```bash
-./aws-helper asgs sandbox
-```
 
 ## Troubleshooting
 
