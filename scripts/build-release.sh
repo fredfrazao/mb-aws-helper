@@ -2,22 +2,17 @@
 set -euo pipefail
 
 VERSION="${1:?Usage: $0 <version>}"
-OUT_DIR="${2:-dist}"
 
-mkdir -p "$OUT_DIR"
+mkdir -p dist
 
-TARBALL="$OUT_DIR/mb-aws-helper-${VERSION}.tar.gz"
-
-# Package only what is needed by Homebrew.
-tar -czf "$TARBALL" \
+tar -czf "dist/mb-aws-helper-${VERSION}.tar.gz" \
   aws_helper \
   aws_tool.py \
-  mb-aws-helper \
   requirements.txt \
   README.md \
-  pyproject.toml
+  mb-aws-helper
 
-shasum -a 256 "$TARBALL" | tee "$OUT_DIR/mb-aws-helper-${VERSION}.sha256"
+shasum -a 256 "dist/mb-aws-helper-${VERSION}.tar.gz" > "dist/mb-aws-helper-${VERSION}.sha256"
 
-echo "Created: $TARBALL"
-echo "SHA256 saved to: $OUT_DIR/mb-aws-helper-${VERSION}.sha256"
+echo "Created: dist/mb-aws-helper-${VERSION}.tar.gz"
+echo "SHA256 saved to: dist/mb-aws-helper-${VERSION}.sha256"

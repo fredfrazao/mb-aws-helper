@@ -1,0 +1,86 @@
+name: Release mb-aws-helper
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      RELEASE_BASE_URL: https://wines.bytestay.pt/awstool
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Build release tarball
+        run: |
+          chmod +x scripts/build-release.sh
+          ./scripts/build-release.sh "$VERSION"
+
+      - name: Read SHA256
+        run: |
+          SHA256="$(awk '{print $1}' dist/mb-aws-helper-${VERSION}.sha256)"
+          echo "SHA256=$SHA256" >> "$GITHUB_ENV"
+          echo "Tarball SHA256: $SHA256"
+
+      - name: Upload tarball to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp \
+            "dist/mb-aws-helper-${VERSION}.tar.gz" \
+            "s3://${{ secrets.R2_BUCKET }}/awstool/mb-aws-helper-${VERSION}.tar.gz" \
+            --endpoint-url "https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com" \
+            --region auto
+
+      - name: Verify public artifact
+        run: |
+          curl -L "${RELEASE_BASE_URL}/mb-aws-helper-${VERSION}.tar.gz" -o "/tmp/mb-aws-helper-${VERSION}.tar.gz"
+          DOWNLOADED_SHA="$(shasum -a 256 /tmp/mb-aws-helper-${VERSION}.tar.gz | awk '{print $1}')"
+          echo "Downloaded SHA256: $DOWNLOADED_SHA"
+          test "$DOWNLOADED_SHA" = "$SHA256"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/mb-aws-helper-${{ env.VERSION }}.tar.gz
+            dist/mb-aws-helper-${{ env.VERSION }}.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout tap repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.HOMEBREW_TAP_REPO }}
+          token: ${{ secrets.HOMEBREW_TAP_PAT }}
+          path: homebrew-tap
+
+      - name: Update Homebrew formula
+        run: |
+          FORMULA="homebrew-tap/Formula/mb-aws-helper.rb"
+          URL="${RELEASE_BASE_URL}/mb-aws-helper-${VERSION}.tar.gz"
+
+          perl -0pi -e "s|url \".*\"|url \"${URL}\"|" "$FORMULA"
+          perl -0pi -e "s|sha256 \".*\"|sha256 \"${SHA256}\"|" "$FORMULA"
+
+          grep -E 'url|sha256' "$FORMULA"
+
+      - name: Commit and push formula update
+        run: |
+          cd homebrew-tap
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/mb-aws-helper.rb
+          git commit -m "mb-aws-helper ${VERSION}" || echo "No changes to commit"
+          git push

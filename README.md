@@ -2,6 +2,25 @@
 
 A modular Python helper for AWS operations around Artifactory and GitLab.
 
+# homebrew-mb-aws-helper
+
+Homebrew tap for mb-aws-helper.
+
+## Install
+
+```bash
+brew tap fredfrazao/mb-aws-helper
+brew install mb-aws-helper
+
+
+# update
+brew update
+brew untap fredfrazao/mb-aws-helper 2>/dev/null || true
+brew tap fredfrazao/mb-aws-helper
+brew reinstall mb-aws-helper
+mb-aws-helper --help
+```
+
 It supports:
 
 - service selection for `artifactory` and `gitlab`
