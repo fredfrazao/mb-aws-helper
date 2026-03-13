@@ -92,6 +92,32 @@ jobs:
           tag_name: ${{ steps.release_meta.outputs.new_release_git_tag }}
           files: out/mb-aws-helper-${{ steps.release_meta.outputs.new_release_version }}.tar.gz
 
+      - name: Wait for GitHub release asset to become available
+        if: steps.release_meta.outputs.new_release_published == 'true'
+        shell: bash
+        env:
+          VERSION: ${{ steps.release_meta.outputs.new_release_version }}
+          TAG: ${{ steps.release_meta.outputs.new_release_git_tag }}
+          SOURCE_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          URL="https://github.com/${SOURCE_REPO}/releases/download/${TAG}/mb-aws-helper-${VERSION}.tar.gz"
+
+          for i in {1..12}; do
+            echo "Checking asset availability, attempt $i..."
+            if curl -fL "$URL" -o /dev/null >/dev/null 2>&1; then
+              echo "Asset is available: $URL"
+              exit 0
+            fi
+
+            echo "Asset not available yet, waiting 10 seconds..."
+            sleep 10
+          done
+
+          echo "Asset did not become available in time: $URL"
+          exit 1
+
       - name: Trigger Homebrew tap
         if: steps.release_meta.outputs.new_release_published == 'true'
         env:
