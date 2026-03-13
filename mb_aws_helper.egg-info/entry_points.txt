@@ -1,0 +1,2 @@
+[console_scripts]
+mb-aws-helper = aws_helper.main:main
