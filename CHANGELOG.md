@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.1...v1.1.2) (2026-03-13)
+
+
+### Bug Fixes
+
+* **ci:** add permissions for semantic-release github success step ([40677f1](https://github.com/fredfrazao/mb-aws-helper/commit/40677f1a70aacb326268abfc968e295731accf2b))
+
 ## [1.1.1](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.0...v1.1.1) (2026-03-13)
 
 
