@@ -68,11 +68,16 @@ jobs:
         if: steps.release_meta.outputs.new_release_published == 'true'
         shell: bash
         run: |
-          rm -rf out
+          rm -rf dist out
           mkdir -p out
           python -m build --sdist
-          cp dist/*.tar.gz "out/mb-aws-helper-${{ steps.release_meta.outputs.new_release_version }}.tar.gz"
-          ls -lah out
+
+          SRC_TARBALL="$(find dist -maxdepth 1 -name '*.tar.gz' | head -n 1)"
+          test -n "$SRC_TARBALL"
+          test -f "$SRC_TARBALL"
+
+          cp "$SRC_TARBALL" "out/mb-aws-helper-${{ steps.release_meta.outputs.new_release_version }}.tar.gz"
+          ls -lah dist out
 
       - name: Validate source artifact exists
         if: steps.release_meta.outputs.new_release_published == 'true'
@@ -96,7 +101,7 @@ jobs:
           SOURCE_REPO: ${{ github.repository }}
         shell: bash
         run: |
-          curl -sS -X POST \
+          curl -f -sS -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             https://api.github.com/repos/fredfrazao/homebrew-mb-aws-helper/dispatches \
