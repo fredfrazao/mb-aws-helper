@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.2...v1.1.3) (2026-03-13)
+
+
+### Bug Fixes
+
+* **ci:** improve release workflow robustness ([bc54d1f](https://github.com/fredfrazao/mb-aws-helper/commit/bc54d1f0042c0b49478fe898e066856e11200b3d))
+
 ## [1.1.2](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.1...v1.1.2) (2026-03-13)
 
 
