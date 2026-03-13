@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.0...v1.1.1) (2026-03-13)
+
+
+### Bug Fixes
+
+* **ci:** test automated release flow ([e8569f4](https://github.com/fredfrazao/mb-aws-helper/commit/e8569f45ca3a694c7791cadba621d073fe138c44))
+
 # [1.1.0](https://github.com/fredfrazao/mb-aws-helper/compare/v1.0.3...v1.1.0) (2026-03-13)
 
 
