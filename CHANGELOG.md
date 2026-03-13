@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.8...v1.2.0) (2026-03-13)
+
+
+### Features
+
+* **cli:** add GitLab deploy-node logs command using CloudWatch Logs Insights ([9e2eb74](https://github.com/fredfrazao/mb-aws-helper/commit/9e2eb7439df70c7254e23315526ad9dec9a31800))
+
 ## [1.1.8](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.7...v1.1.8) (2026-03-13)
 
 
