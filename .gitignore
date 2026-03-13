@@ -7,3 +7,4 @@
 /aws_helper/output/__pycache__
 /aws_helper/ssm/__pycache__
 /aws_helper/utils/__pycache__
+/.idea/
