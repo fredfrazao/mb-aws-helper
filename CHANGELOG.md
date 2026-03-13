@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.4...v1.1.5) (2026-03-13)
+
+
+### Bug Fixes
+
+* **ci:** wait for release asset before triggering tap ([30a93eb](https://github.com/fredfrazao/mb-aws-helper/commit/30a93eba66024da67e51b14429cf9405f324c5c3))
+
 ## [1.1.4](https://github.com/fredfrazao/mb-aws-helper/compare/v1.1.3...v1.1.4) (2026-03-13)
 
 
