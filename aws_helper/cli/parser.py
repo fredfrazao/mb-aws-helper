@@ -16,6 +16,19 @@ from aws_helper.validators import (
 )
 
 
+def validate_limit(value: str) -> int:
+    """Validate positive integer limit values."""
+    try:
+        ivalue = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("limit must be an integer") from exc
+
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError("limit must be greater than 0")
+
+    return ivalue
+
+
 def print_examples() -> None:
     print(
         """
@@ -76,6 +89,12 @@ Recover an existing screen session on deploy node:
 
 Open shell on the first rails-worker instance:
   mb-aws-helper rails-worker-shell prod
+
+Query deploy-node hot reload logs for the last 24 hours:
+  mb-aws-helper deploy-node logs prod --since 24h
+
+Return only 200 lines in JSON:
+  mb-aws-helper deploy-node logs prod --since 24h --limit 200 --json
 
 Artifactory helpers
 -------------------
@@ -139,22 +158,42 @@ Run 'mb-aws-helper --examples' for a full list.
 
     asgs_parser = subparsers.add_parser("asgs", help="List Auto Scaling Groups")
     asgs_parser.add_argument("env", type=validate_env, help="prod | sandbox | int")
-    asgs_parser.add_argument("--service", type=validate_service, choices=VALID_SERVICES, default="artifactory")
+    asgs_parser.add_argument(
+        "--service",
+        type=validate_service,
+        choices=VALID_SERVICES,
+        default="artifactory",
+    )
     asgs_parser.add_argument("--asg", dest="asg_match", help="Case-insensitive substring filter for ASG name")
     asgs_parser.add_argument("--json", action="store_true", help="Output JSON")
 
     instances_parser = subparsers.add_parser("instances", help="List EC2 instances in ASGs")
     instances_parser.add_argument("env", type=validate_env, help="prod | sandbox | int")
-    instances_parser.add_argument("--service", type=validate_service, choices=VALID_SERVICES, default="artifactory")
+    instances_parser.add_argument(
+        "--service",
+        type=validate_service,
+        choices=VALID_SERVICES,
+        default="artifactory",
+    )
     instances_parser.add_argument("--match", help="Case-insensitive substring filter for ASG name or instance ID")
     instances_parser.add_argument("--asg", dest="asg_match", help="Case-insensitive substring filter for ASG name")
     instances_parser.add_argument("--state", help="Filter by instance state, e.g. running")
-    instances_parser.add_argument("--sort", type=validate_sort_order, choices=VALID_SORT_ORDERS, default="asc")
+    instances_parser.add_argument(
+        "--sort",
+        type=validate_sort_order,
+        choices=VALID_SORT_ORDERS,
+        default="asc",
+    )
     instances_parser.add_argument("--json", action="store_true", help="Output JSON")
 
     summary_parser = subparsers.add_parser("summary", help="Show a quick environment summary")
     summary_parser.add_argument("env", type=validate_env, help="prod | sandbox | int")
-    summary_parser.add_argument("--service", type=validate_service, choices=VALID_SERVICES, default="artifactory")
+    summary_parser.add_argument(
+        "--service",
+        type=validate_service,
+        choices=VALID_SERVICES,
+        default="artifactory",
+    )
     summary_parser.add_argument("--asg", dest="asg_match", help="Case-insensitive substring filter for ASG name")
     summary_parser.add_argument("--json", action="store_true", help="Output JSON")
 
@@ -177,11 +216,21 @@ Run 'mb-aws-helper --examples' for a full list.
 
     ssm_parser = subparsers.add_parser("ssm", help="Open SSM session to an instance")
     ssm_parser.add_argument("env", type=validate_env, help="prod | sandbox | int")
-    ssm_parser.add_argument("--service", type=validate_service, choices=VALID_SERVICES, default="artifactory")
+    ssm_parser.add_argument(
+        "--service",
+        type=validate_service,
+        choices=VALID_SERVICES,
+        default="artifactory",
+    )
     ssm_parser.add_argument("--instance-id", type=validate_instance_id, help="Open SSM directly to this instance ID")
     ssm_parser.add_argument("--match", help="Case-insensitive substring filter for ASG name or instance ID")
     ssm_parser.add_argument("--asg", dest="asg_match", help="Case-insensitive substring filter for ASG name")
-    ssm_parser.add_argument("--sort", type=validate_sort_order, choices=VALID_SORT_ORDERS, default="asc")
+    ssm_parser.add_argument(
+        "--sort",
+        type=validate_sort_order,
+        choices=VALID_SORT_ORDERS,
+        default="asc",
+    )
 
     deploy_parser = subparsers.add_parser("deploy-node", help="GitLab deploy-node helpers")
     deploy_sub = deploy_parser.add_subparsers(dest="deploy_command", required=True)
@@ -190,16 +239,49 @@ Run 'mb-aws-helper --examples' for a full list.
     deploy_list_parser.add_argument("env", type=validate_env, help="prod | sandbox | int")
     deploy_list_parser.add_argument("--match", help="Case-insensitive substring filter for ASG name or instance ID")
     deploy_list_parser.add_argument("--asg", dest="asg_match", help="Case-insensitive substring filter for ASG name")
-    deploy_list_parser.add_argument("--sort", type=validate_sort_order, choices=VALID_SORT_ORDERS, default="asc")
+    deploy_list_parser.add_argument(
+        "--sort",
+        type=validate_sort_order,
+        choices=VALID_SORT_ORDERS,
+        default="asc",
+    )
     deploy_list_parser.add_argument("--json", action="store_true", help="Output JSON")
 
     deploy_open_parser = deploy_sub.add_parser("open", help="Open GitLab deploy node session with screen")
     deploy_open_parser.add_argument("env", type=validate_env, help="prod | sandbox | int")
     deploy_open_parser.add_argument("mode", choices=["new", "recover"], help="new or recover")
-    deploy_open_parser.add_argument("--instance-id", type=validate_instance_id, help="Open directly to this instance ID")
+    deploy_open_parser.add_argument(
+        "--instance-id",
+        type=validate_instance_id,
+        help="Open directly to this instance ID",
+    )
     deploy_open_parser.add_argument("--match", help="Case-insensitive substring filter for ASG name or instance ID")
     deploy_open_parser.add_argument("--asg", dest="asg_match", help="Case-insensitive substring filter for ASG name")
-    deploy_open_parser.add_argument("--sort", type=validate_sort_order, choices=VALID_SORT_ORDERS, default="asc")
+    deploy_open_parser.add_argument(
+        "--sort",
+        type=validate_sort_order,
+        choices=VALID_SORT_ORDERS,
+        default="asc",
+    )
+
+    deploy_logs_parser = deploy_sub.add_parser(
+        "logs",
+        help="Query deploy_hot_reload logs in CloudWatch Logs Insights",
+    )
+    deploy_logs_parser.add_argument("env", type=validate_env, help="prod | sandbox | int")
+    deploy_logs_parser.add_argument(
+        "--since",
+        type=validate_since,
+        default="24h",
+        help="Time window like 30m, 6h, 24h, 7d (default: 24h)",
+    )
+    deploy_logs_parser.add_argument(
+        "--limit",
+        type=validate_limit,
+        default=100,
+        help="Maximum number of log lines to return (default: 100)",
+    )
+    deploy_logs_parser.add_argument("--json", action="store_true", help="Output JSON")
 
     rails_worker_parser = subparsers.add_parser(
         "rails-worker-shell",
@@ -207,6 +289,11 @@ Run 'mb-aws-helper --examples' for a full list.
     )
     rails_worker_parser.add_argument("env", type=validate_env, help="prod | sandbox | int")
     rails_worker_parser.add_argument("--asg", dest="asg_match", help="Case-insensitive substring filter for ASG name")
-    rails_worker_parser.add_argument("--sort", type=validate_sort_order, choices=VALID_SORT_ORDERS, default="asc")
+    rails_worker_parser.add_argument(
+        "--sort",
+        type=validate_sort_order,
+        choices=VALID_SORT_ORDERS,
+        default="asc",
+    )
 
     return parser

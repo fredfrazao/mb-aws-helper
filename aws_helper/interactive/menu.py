@@ -7,10 +7,16 @@ from aws_helper.commands.artifactory import cmd_support_instances, cmd_support_s
 from aws_helper.commands.common import cmd_asgs, cmd_env, cmd_instances, cmd_ssm, cmd_summary
 from aws_helper.commands.gitlab import (
     cmd_gitlab_deploy_list,
+    cmd_gitlab_deploy_logs,
     cmd_gitlab_deploy_session,
     cmd_gitlab_rails_worker_shell,
 )
-from aws_helper.validators import validate_command_id, validate_instance_id, validate_since, validate_ticket_id
+from aws_helper.validators import (
+    validate_command_id,
+    validate_instance_id,
+    validate_since,
+    validate_ticket_id,
+)
 
 
 def interactive_menu(region: str) -> None:
@@ -84,7 +90,8 @@ def interactive_menu(region: str) -> None:
                 print("  8) GitLab deploy node (new screen session)")
                 print("  9) GitLab deploy node (recover screen session)")
                 print(" 10) GitLab rails-worker shell (first instance)")
-                max_action = 10
+                print(" 11) GitLab deploy hot reload logs")
+                max_action = 11
 
             print("  b) Back to environment")
             print("  s) Change service")
@@ -140,6 +147,28 @@ def interactive_menu(region: str) -> None:
                     cmd_gitlab_deploy_session(env, region, mode="recover")
                 elif choice == "10" and service == "gitlab":
                     cmd_gitlab_rails_worker_shell(env, region)
+                elif choice == "11" and service == "gitlab":
+                    since = validate_since(input("Since [24h]: ").strip() or "24h")
+
+                    limit_raw = input("Limit [100]: ").strip()
+                    try:
+                        limit = int(limit_raw) if limit_raw else 100
+                    except ValueError as exc:
+                        raise argparse.ArgumentTypeError("limit must be an integer") from exc
+
+                    if limit <= 0:
+                        raise argparse.ArgumentTypeError("limit must be greater than 0")
+
+                    json_raw = input("JSON output? [y/N]: ").strip().lower()
+                    json_output = json_raw in {"y", "yes"}
+
+                    cmd_gitlab_deploy_logs(
+                        env,
+                        region,
+                        since=since,
+                        limit=limit,
+                        json_output=json_output,
+                    )
                 else:
                     print("Invalid action choice.")
                     continue

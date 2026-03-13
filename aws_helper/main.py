@@ -8,6 +8,7 @@ from aws_helper.commands.artifactory import cmd_support_instances, cmd_support_s
 from aws_helper.commands.common import cmd_asgs, cmd_env, cmd_instances, cmd_ssm, cmd_summary
 from aws_helper.commands.gitlab import (
     cmd_gitlab_deploy_list,
+    cmd_gitlab_deploy_logs,
     cmd_gitlab_deploy_session,
     cmd_gitlab_rails_worker_shell,
 )
@@ -39,7 +40,13 @@ def main() -> None:
     if args.command == "env":
         cmd_env(args.env, args.service, args.region)
     elif args.command == "asgs":
-        cmd_asgs(args.env, args.service, args.region, asg_match=args.asg_match, json_output=args.json)
+        cmd_asgs(
+            args.env,
+            args.service,
+            args.region,
+            asg_match=args.asg_match,
+            json_output=args.json,
+        )
     elif args.command == "instances":
         cmd_instances(
             args.env,
@@ -52,7 +59,13 @@ def main() -> None:
             json_output=args.json,
         )
     elif args.command == "summary":
-        cmd_summary(args.env, args.service, args.region, asg_match=args.asg_match, json_output=args.json)
+        cmd_summary(
+            args.env,
+            args.service,
+            args.region,
+            asg_match=args.asg_match,
+            json_output=args.json,
+        )
     elif args.command == "support":
         if args.support_command == "instances":
             cmd_support_instances(
@@ -105,11 +118,24 @@ def main() -> None:
                 asg_match=args.asg_match,
                 sort_order=args.sort,
             )
+        elif args.deploy_command == "logs":
+            cmd_gitlab_deploy_logs(
+                args.env,
+                args.region,
+                since=args.since,
+                limit=args.limit,
+                json_output=args.json,
+            )
         else:
             parser.print_help()
             raise SystemExit(1)
     elif args.command == "rails-worker-shell":
-        cmd_gitlab_rails_worker_shell(args.env, args.region, asg_match=args.asg_match, sort_order=args.sort)
+        cmd_gitlab_rails_worker_shell(
+            args.env,
+            args.region,
+            asg_match=args.asg_match,
+            sort_order=args.sort,
+        )
     else:
         parser.print_help()
         raise SystemExit(1)
