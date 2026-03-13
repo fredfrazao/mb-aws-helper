@@ -81,6 +81,58 @@ It supports:
         ├── common.py
         └── logging_utils.py
 ```
+## Installation
+
+macOS (Homebrew)
+
+The easiest way to install mb-aws-helper on macOS is via Homebrew
+```bash
+brew tap fredfrazao/mb-aws-helper
+brew install mb-aws-helper
+```
+
+Update to the latest version:
+```bash
+brew update
+brew upgrade mb-aws-helper
+```
+
+Verify installation:
+```bash
+mb-aws-helper --help
+```
+
+Linux
+
+Install using pipx (recommended).
+
+Install pipx
+
+Ubuntu / Debian:
+```bash
+sudo apt update
+sudo apt install pipx python3-venv
+pipx ensurepath
+```
+
+Windows
+
+Installation on Windows is also done via pipx.
+
+Install pipx
+
+Open PowerShell and run:
+```bash
+python -m pip install --user pipx
+python -m pipx ensurepath
+```
+Restart PowerShell afterwards.
+
+Install mb-aws-helper
+```bash
+pipx install git+https://github.com/fredfrazao/mb-aws-helper.git
+```
+
 
 ## Profile resolution
 
@@ -194,8 +246,6 @@ Top-level commands:
 
 ## Alias and command mapping
 
-This section is intended for direct inclusion in other docs or internal README sections.
-
 ```markdown
 ### Command aliases / quick map
 
@@ -217,43 +267,43 @@ This section is intended for direct inclusion in other docs or internal README s
 ### Print AWS environment exports
 
 ```bash
-python aws_tool.py env sandbox
-python aws_tool.py env prod --service gitlab
+mb-aws-helper env sandbox
+mb-aws-helper env prod --service gitlab
 ```
 
 Use with `eval`:
 
 ```bash
-eval "$(python aws_tool.py env sandbox)"
-eval "$(python aws_tool.py env prod --service gitlab)"
+eval "$(mb-aws-helper env sandbox)"
+eval "$(mb-aws-helper env prod --service gitlab)"
 ```
 
 ### List ASGs
 
 ```bash
-python aws_tool.py asgs sandbox
-python aws_tool.py asgs sandbox --service gitlab
-python aws_tool.py asgs prod --service gitlab --asg deploy
-python aws_tool.py asgs int --json
+mb-aws-helper asgs sandbox
+mb-aws-helper asgs sandbox --service gitlab
+mb-aws-helperasgs prod --service gitlab --asg deploy
+mb-aws-helper asgs int --json
 ```
 
 ### List instances
 
 ```bash
-python aws_tool.py instances prod
-python aws_tool.py instances int --service gitlab
-python aws_tool.py instances sandbox --service gitlab --state running
-python aws_tool.py instances sandbox --service gitlab --asg rails-worker
-python aws_tool.py instances sandbox --match i-0123456789abcdef0
-python aws_tool.py instances sandbox --sort desc --json
+mb-aws-helper instances prod
+mb-aws-helper instances int --service gitlab
+mb-aws-helper  instances sandbox --service gitlab --state running
+mb-aws-helper  instances sandbox --service gitlab --asg rails-worker
+mb-aws-helper  instances sandbox --match i-XXXXXX
+mb-aws-helper instances sandbox --sort desc --json
 ```
 
 ### Environment summary
 
 ```bash
-python aws_tool.py summary sandbox
-python aws_tool.py summary prod --service gitlab
-python aws_tool.py summary prod --service gitlab --asg deploy --json
+mb-aws-helper summary sandbox
+mb-aws-helpersummary prod --service gitlab
+mb-aws-helpersummary prod --service gitlab --asg deploy --json
 ```
 
 The summary includes:
@@ -269,36 +319,36 @@ The summary includes:
 ### Open SSM session
 
 ```bash
-python aws_tool.py ssm sandbox
-python aws_tool.py ssm prod --service gitlab
-python aws_tool.py ssm sandbox --instance-id i-0123456789abcdef0
-python aws_tool.py ssm sandbox --service gitlab --asg rails-worker
+mb-aws-helperssm sandbox
+mb-aws-helper ssm prod --service gitlab
+mb-aws-helper ssm sandbox --instance-id i-0123456789abcdef0
+mb-aws-helper ssm sandbox --service gitlab --asg rails-worker
 ```
 
 ### Artifactory support bundle
 
 ```bash
-python aws_tool.py support instances prod 12345 24h
-python aws_tool.py support instances prod 12345 24h --asg worker --no-dry-run
-python aws_tool.py support status prod 12345678-aaaa-bbbb-cccc-1234567890ab
-python aws_tool.py support status prod 12345678-aaaa-bbbb-cccc-1234567890ab --watch
+mb-aws-helper support instances prod 12345 24h
+mb-aws-helper support instances prod 12345 24h --asg worker --no-dry-run
+mb-aws-helper support status prod 12345678-aaaa-bbbb-cccc-1234567890ab
+mb-aws-helper support status prod 12345678-aaaa-bbbb-cccc-1234567890ab --watch
 ```
 
 ### GitLab deploy nodes
 
 ```bash
-python aws_tool.py deploy-node list sandbox
-python aws_tool.py deploy-node list prod --asg deploy
-python aws_tool.py deploy-node open sandbox new
-python aws_tool.py deploy-node open sandbox recover
-python aws_tool.py deploy-node open prod new --instance-id i-0123456789abcdef0
+mb-aws-helper deploy-node list sandbox
+mb-aws-helper deploy-node list prod --asg deploy
+mb-aws-helper deploy-node open sandbox new
+mb-aws-helper deploy-node open sandbox recover
+mb-aws-helper  deploy-node open prod new --instance-id i-0123456789abcdef0
 ```
 
 ### GitLab rails-worker shell
 
 ```bash
-python aws_tool.py rails-worker-shell sandbox
-python aws_tool.py rails-worker-shell prod --asg rails-worker
+mb-aws-helper rails-worker-shell sandbox
+mb-aws-helper rails-worker-shell prod --asg rails-worker
 ```
 
 ## Discovery cache
